@@ -1,0 +1,9 @@
+django
+djangorestframework
+djoser
+dj-database-url
+psycopg2-binary
+django-cors-headers
+python-dotenv
+Pillow
+social-auth-app-django

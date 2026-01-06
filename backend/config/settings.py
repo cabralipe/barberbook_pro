@@ -93,7 +93,10 @@ import os
 import dj_database_url
 
 if os.environ.get('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url.startswith('postgresql+psycopg2://'):
+        db_url = db_url.replace('postgresql+psycopg2://', 'postgres://', 1)
+    DATABASES['default'] = dj_database_url.parse(db_url, conn_max_age=600, ssl_require=True)
 elif os.environ.get('POSTGRES_DB'):
     DATABASES = {
         'default': {

@@ -163,10 +163,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleRegister = () => {
-    // Simulate register and return to app (or login)
-    setView('booking');
-  };
+
 
   const handleLogout = () => {
     setView('login');
