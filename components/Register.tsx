@@ -2,12 +2,36 @@ import React, { useState } from 'react';
 
 interface RegisterProps {
   onLoginClick: () => void;
-  onRegister: () => void;
+  onRegister: (userData: any) => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
-export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) => {
+export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister, loading, error }) => {
   const [role, setRole] = useState<'client' | 'business'>('client');
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onRegister({
+      username: formData.email, // Using email as username for now
+      email: formData.email,
+      password: formData.password,
+      first_name: formData.name.split(' ')[0],
+      last_name: formData.name.split(' ').slice(1).join(' '),
+      // phone is not in default User model, would need custom model or profile. Ignoring for now or adding to profile later.
+    });
+  };
 
   return (
     <div className="bg-background-light dark:bg-background-dark font-sans text-slate-900 dark:text-white min-h-screen flex flex-col">
@@ -23,7 +47,7 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
         </div>
         <div className="flex flex-1 justify-end gap-4">
           <span className="text-sm font-medium text-text-secondary self-center hidden sm:block">Já tem uma conta?</span>
-          <button 
+          <button
             onClick={onLoginClick}
             className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-transparent border border-gray-300 dark:border-border-dark text-slate-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark transition-colors text-sm font-bold leading-normal tracking-[0.015em]"
           >
@@ -37,9 +61,9 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
         {/* Left Side: Image/Branding (Hidden on mobile, visible on desktop) */}
         <div className="hidden lg:flex w-5/12 relative overflow-hidden bg-surface-dark items-center justify-center">
           <div className="absolute inset-0 opacity-60 bg-gradient-to-t from-background-dark to-transparent z-10"></div>
-          <img 
-            alt="Barber Shop Interior" 
-            className="absolute inset-0 w-full h-full object-cover" 
+          <img
+            alt="Barber Shop Interior"
+            className="absolute inset-0 w-full h-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRHxij05X6_9mumuokkMwKBijvZqUcKJ76vy1UFdKU-K9qmpUhhhE6cwfLhaNT2L13p2TbQ7Jfg4txYM5Zqw3L5cR6O2Eb5xJ3c_OY0S3r_WLYaq-TpPFCIpBEA_TM1CaTKzxOzElyvE8K0zoV3lf-bTvXRCNTxpCFNsRmsaaMvIj17xbBYvZuVi73c6HXxKIFbujmzrWhIktF3uu0RyFX7ZIM4xrKr-TNVbSCOCJuy761ZQqyRBuFev202KazKO36-JZuSzPi0o0"
           />
           <div className="relative z-20 p-12 text-white max-w-lg">
@@ -58,12 +82,17 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
             <div className="flex flex-col gap-2 pb-8">
               <h1 className="text-slate-900 dark:text-white text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">Crie sua conta</h1>
               <p className="text-slate-500 dark:text-text-secondary text-base font-normal leading-normal">Preencha seus dados abaixo para começar gratuitamente.</p>
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
             </div>
 
             {/* Role Switcher */}
             <div className="mb-8">
               <div className="flex h-12 w-full items-center justify-center rounded-xl bg-gray-200 dark:bg-surface-dark p-1 border border-transparent dark:border-border-dark">
-                <label 
+                <label
                   onClick={() => setRole('client')}
                   className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-bold leading-normal transition-all duration-200 ${role === 'client' ? 'bg-white dark:bg-background-dark shadow-sm dark:shadow-[0_0_4px_rgba(0,0,0,0.5)] text-primary' : 'text-slate-500 dark:text-text-secondary'}`}
                 >
@@ -73,7 +102,7 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
                   </span>
                   <input type="radio" name="user_role" className="invisible w-0" checked={role === 'client'} readOnly />
                 </label>
-                <label 
+                <label
                   onClick={() => setRole('business')}
                   className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-bold leading-normal transition-all duration-200 ${role === 'business' ? 'bg-white dark:bg-background-dark shadow-sm dark:shadow-[0_0_4px_rgba(0,0,0,0.5)] text-primary' : 'text-slate-500 dark:text-text-secondary'}`}
                 >
@@ -87,7 +116,7 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
             </div>
 
             {/* Form Fields */}
-            <form className="flex flex-col gap-5" onSubmit={(e) => { e.preventDefault(); onRegister(); }}>
+            <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
               {/* Name */}
               <div className="flex flex-col gap-2">
                 <label className="text-slate-900 dark:text-white text-sm font-medium leading-normal">Nome Completo</label>
@@ -95,7 +124,14 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary">
                     <span className="material-symbols-outlined text-[20px]">badge</span>
                   </span>
-                  <input className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-4 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all" placeholder="Ex: João Silva" />
+                  <input
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-4 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all"
+                    placeholder="Ex: João Silva"
+                    required
+                  />
                 </div>
               </div>
 
@@ -106,7 +142,15 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary">
                     <span className="material-symbols-outlined text-[20px]">mail</span>
                   </span>
-                  <input type="email" className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-4 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all" placeholder="seu@email.com" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-4 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all"
+                    placeholder="seu@email.com"
+                    required
+                  />
                 </div>
               </div>
 
@@ -119,7 +163,14 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary">
                       <span className="material-symbols-outlined text-[20px]">call</span>
                     </span>
-                    <input type="tel" className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-4 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all" placeholder="(11) 99999-9999" />
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-4 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all"
+                      placeholder="(11) 99999-9999"
+                    />
                   </div>
                 </div>
 
@@ -130,13 +181,17 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary">
                       <span className="material-symbols-outlined text-[20px]">lock</span>
                     </span>
-                    <input 
-                      type={showPassword ? "text" : "password"} 
-                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-12 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all" 
-                      placeholder="Min. 8 caracteres" 
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-surface-dark focus:border-primary h-12 pl-12 pr-12 placeholder:text-slate-400 dark:placeholder:text-text-secondary/50 text-base font-normal leading-normal transition-all"
+                      placeholder="Min. 8 caracteres"
+                      required
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-primary transition-colors cursor-pointer"
                     >
@@ -157,8 +212,11 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
               </div>
 
               {/* Submit Button */}
-              <button className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-4 bg-primary hover:bg-orange-600 text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
-                <span className="truncate">Cadastrar</span>
+              <button
+                disabled={loading}
+                className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-4 bg-primary hover:bg-orange-600 text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <span className="truncate">{loading ? 'Cadastrando...' : 'Cadastrar'}</span>
               </button>
 
               {/* Divider */}
@@ -170,7 +228,7 @@ export const Register: React.FC<RegisterProps> = ({ onLoginClick, onRegister }) 
 
               {/* Social Login */}
               <button type="button" className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl h-12 px-4 bg-white dark:bg-white text-slate-900 dark:text-slate-900 border border-gray-200 text-sm font-bold leading-normal tracking-[0.015em] transition-colors hover:bg-gray-50">
-                <img alt="Google Logo" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOO4IDoxZQzL_GfnTn3R0dHmDQ_Bsu0BHUicnNkBji5dlmF89-FZNFhCsBQ3giHkoAH4ku16J27SgwUYXSUiXTYxlPd1I-depi9--RrzwAFdoDJPHHRwnBXnkPmVCU6w_1FrD9829NJi6_XxCCf55o3bIF1uvC7rdQyFGWIgfhAfJIUz_YDhvxEPRhE_sfdRc3DUF2AeiUh8oWfh51-fkk0hSUtTEXtS7LwkApfGdZL3E6dXo0-E2jlglB5oRy5lqsEKqoM3uSEoA"/>
+                <img alt="Google Logo" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOO4IDoxZQzL_GfnTn3R0dHmDQ_Bsu0BHUicnNkBji5dlmF89-FZNFhCsBQ3giHkoAH4ku16J27SgwUYXSUiXTYxlPd1I-depi9--RrzwAFdoDJPHHRwnBXnkPmVCU6w_1FrD9829NJi6_XxCCf55o3bIF1uvC7rdQyFGWIgfhAfJIUz_YDhvxEPRhE_sfdRc3DUF2AeiUh8oWfh51-fkk0hSUtTEXtS7LwkApfGdZL3E6dXo0-E2jlglB5oRy5lqsEKqoM3uSEoA" />
                 <span>Google</span>
               </button>
             </form>

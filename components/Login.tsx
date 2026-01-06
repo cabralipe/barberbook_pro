@@ -1,27 +1,32 @@
 import React from 'react';
 
 interface LoginProps {
-  onLogin: () => void;
+  onLogin: (e: any, p: any) => void;
   onRegisterClick: () => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
-export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
+export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, loading, error }) => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
   return (
     <div className="bg-background-dark text-white h-screen w-full flex overflow-hidden font-sans">
       {/* Left Column: Visual/Marketing */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-surface-marketing items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 w-full h-full">
-          <img 
-            alt="Classic dark barbershop interior" 
-            className="w-full h-full object-cover opacity-60" 
+          <img
+            alt="Classic dark barbershop interior"
+            className="w-full h-full object-cover opacity-60"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYzfQdcIq1YS9Bjvygb12mJTSzRKV-aQ3Glz6tGtlTVC4bF7qhf1tIkfts8ihY8iPFXdmCm-xd7UbN2JTrLgYQOSls1G10_qwBBAgzCQap6y5Og1NlVuyI_Pb7JwgpfsVu1nM_SJrYprV6lr-sYPeinQfZUqXOi8rDZnCC0WlgnJWQd0gW3edH7T58S7aItye8BCq8Wqdq7i7L42YoJtL6P93QHJwONkMbIac6JX7p7G84RmWBY7KcLUPfyY8BJLK31jFYp1qTdU0"
           />
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#181411] via-[#181411]/40 to-transparent"></div>
           <div className="absolute inset-0 bg-[#181411]/30 backdrop-blur-[1px]"></div>
         </div>
-        
+
         {/* Content over image */}
         <div className="relative z-10 max-w-lg px-10 text-center">
           <div className="mb-6 flex justify-center">
@@ -33,13 +38,13 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
           <p className="text-lg text-gray-300">
             A plataforma completa para barbeiros profissionais, donos de barbearia e clientes exigentes.
           </p>
-          
+
           {/* Testimonial/Badge */}
           <div className="mt-12 flex items-center justify-center gap-4 py-4 px-6 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 mx-auto w-fit">
             <div className="flex -space-x-3">
-              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-[#181411]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC11JgVvxUeQBpxOw8FauoEcGROFGk1ep_Rf_5g75o7bSp27URcy5229_tw_5EfRmwEkSPhQg4PmyTWExGYpdCI_M1T88zvoJx4Mh9EDV8CFtQFx5Yeum2OMraImvtRW1ajtm2FWfav8HcmyVdakr1xewfq-nwYkeQjcxWegaB7Hfg-OPywuuSnd3-EkapXX5X7YelfYmYNz5ZxawKdF21ITDLJxJ2yh4KkcPqd_iz9FYlvVgivLEu0WkVQm3aPP4o9Rtt67yEiAh8"/>
-              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-[#181411]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxmn1pheX9lvMyMqG7bFBck3T8fNjWBDfABQowA_DTBR50iR03hmfVnH5dGTI1qw7IhhIwjSMYwwL2EosCSheKU1gu0O-6wLR2C6k-Epbxo9pV-NrOJXUYU5VbVv8fHd9vQaT9238u7bGbGjBmNXSOmsTtYRLYweXTI-DzQTXWuYMxBbDM6N1KdiCoM9uCfNBtQThdmxt52H0VcEt91k7vYUAKR3iGQsE7vKC9weRBD1DTfkQRec5augCMU1ZeHpDBxs6_G7kGQj4"/>
-              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-[#181411]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3xvA6e7AAPk68dEsuREo4hBN8lzkQphZg53L1JGrNgjlExUc3V09sv0BuY1u26jZoQ_labQM1jKxS7OLwQYRgTD6ZzUvtJcp1ACKbq7WQxVTjiTY79YiBH6jGN3M_gv7-VjWDRFj0ZHCIpnln1-7XNBTIw6L-MxsH-QBPVdOu2Mx2n6f6XzL3_mHVgCZqZXGZl620KlXxpnKhBuUeQUTQybRL3pKIuMwCCI7kD07DWghVcv-fRVgEQSlTfQ4KqS3wMDQ2T3OEhcc"/>
+              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-[#181411]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC11JgVvxUeQBpxOw8FauoEcGROFGk1ep_Rf_5g75o7bSp27URcy5229_tw_5EfRmwEkSPhQg4PmyTWExGYpdCI_M1T88zvoJx4Mh9EDV8CFtQFx5Yeum2OMraImvtRW1ajtm2FWfav8HcmyVdakr1xewfq-nwYkeQjcxWegaB7Hfg-OPywuuSnd3-EkapXX5X7YelfYmYNz5ZxawKdF21ITDLJxJ2yh4KkcPqd_iz9FYlvVgivLEu0WkVQm3aPP4o9Rtt67yEiAh8" />
+              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-[#181411]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxmn1pheX9lvMyMqG7bFBck3T8fNjWBDfABQowA_DTBR50iR03hmfVnH5dGTI1qw7IhhIwjSMYwwL2EosCSheKU1gu0O-6wLR2C6k-Epbxo9pV-NrOJXUYU5VbVv8fHd9vQaT9238u7bGbGjBmNXSOmsTtYRLYweXTI-DzQTXWuYMxBbDM6N1KdiCoM9uCfNBtQThdmxt52H0VcEt91k7vYUAKR3iGQsE7vKC9weRBD1DTfkQRec5augCMU1ZeHpDBxs6_G7kGQj4" />
+              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-[#181411]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3xvA6e7AAPk68dEsuREo4hBN8lzkQphZg53L1JGrNgjlExUc3V09sv0BuY1u26jZoQ_labQM1jKxS7OLwQYRgTD6ZzUvtJcp1ACKbq7WQxVTjiTY79YiBH6jGN3M_gv7-VjWDRFj0ZHCIpnln1-7XNBTIw6L-MxsH-QBPVdOu2Mx2n6f6XzL3_mHVgCZqZXGZl620KlXxpnKhBuUeQUTQybRL3pKIuMwCCI7kD07DWghVcv-fRVgEQSlTfQ4KqS3wMDQ2T3OEhcc" />
             </div>
             <div className="text-left">
               <p className="text-white text-sm font-semibold">Mais de 5.000</p>
@@ -61,7 +66,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
 
         <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 md:p-20">
           <div className="w-full max-w-[420px] flex flex-col gap-6">
-            
+
             {/* Header Section */}
             <div className="mb-2">
               {/* Desktop Logo */}
@@ -71,10 +76,15 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Acesse sua conta</h1>
               <p className="text-text-secondary">Gerencie seus agendamentos e cortes com facilidade.</p>
+              {error && (
+                <div className="mt-4 bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
             </div>
 
             {/* Form Section */}
-            <form onSubmit={(e) => { e.preventDefault(); onLogin(); }} className="flex flex-col gap-5 mt-2">
+            <form onSubmit={(e) => { e.preventDefault(); onLogin(email, password); }} className="flex flex-col gap-5 mt-2">
               {/* Email Field */}
               <div className="space-y-2">
                 <label className="text-white text-sm font-medium leading-normal" htmlFor="email">E-mail</label>
@@ -82,13 +92,15 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">
                     <span className="material-symbols-outlined text-[20px]">mail</span>
                   </div>
-                  <input 
-                    className="form-input block w-full rounded-xl border border-input-border bg-input-bg text-white pl-10 pr-4 py-3.5 placeholder:text-text-secondary/60 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200" 
-                    id="email" 
-                    name="email" 
-                    placeholder="seu@email.com" 
-                    required 
+                  <input
+                    className="form-input block w-full rounded-xl border border-input-border bg-input-bg text-white pl-10 pr-4 py-3.5 placeholder:text-text-secondary/60 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                    id="email"
+                    name="email"
+                    placeholder="seu@email.com"
+                    required
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -103,13 +115,15 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">
                     <span className="material-symbols-outlined text-[20px]">lock</span>
                   </div>
-                  <input 
-                    className="form-input block w-full rounded-xl border border-input-border bg-input-bg text-white pl-10 pr-12 py-3.5 placeholder:text-text-secondary/60 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200" 
-                    id="password" 
-                    name="password" 
-                    placeholder="********" 
-                    required 
+                  <input
+                    className="form-input block w-full rounded-xl border border-input-border bg-input-bg text-white pl-10 pr-12 py-3.5 placeholder:text-text-secondary/60 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                    id="password"
+                    name="password"
+                    placeholder="********"
+                    required
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-secondary hover:text-white transition-colors" type="button">
                     <span className="material-symbols-outlined text-[20px]">visibility</span>
@@ -118,11 +132,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
               </div>
 
               {/* Login Button */}
-              <button 
-                className="mt-2 w-full flex items-center justify-center rounded-xl bg-primary py-3.5 px-4 text-sm font-bold text-[#181411] shadow-lg shadow-primary/20 hover:bg-primary-hover hover:shadow-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-[#181411] transition-all duration-200" 
+              <button
+                disabled={loading}
+                className="mt-2 w-full flex items-center justify-center rounded-xl bg-primary py-3.5 px-4 text-sm font-bold text-[#181411] shadow-lg shadow-primary/20 hover:bg-primary-hover hover:shadow-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-[#181411] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                 type="submit"
               >
-                Entrar
+                {loading ? 'Entrando...' : 'Entrar'}
               </button>
             </form>
 
@@ -157,7 +172,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
             {/* Sign Up Footer */}
             <p className="text-center text-sm text-text-secondary mt-4">
               Novo por aqui?{' '}
-              <button 
+              <button
                 onClick={onRegisterClick}
                 className="font-bold text-primary hover:text-primary-hover hover:underline transition-colors"
               >
