@@ -1,11 +1,11 @@
 export interface Service {
   id: string;
   name: string;
-  price: number;
-  durationMin: number;
+  price: number | string;
+  duration_min: number;
   description?: string;
   category?: 'Cabelo' | 'Barba' | 'Combo' | 'Outros';
-  discount?: number;
+  discount?: number | string;
 }
 
 export interface Barber {
@@ -19,15 +19,15 @@ export interface Barbershop {
   name: string;
   address: string;
   rating: number;
-  reviewsCount?: string; // e.g. "500+"
+  reviews_count?: string; // e.g. "500+"
   image: string;
   logo?: string;
   status: 'Aberto' | 'Fechado' | 'Agenda Cheia' | 'Lotado';
-  openingHours: string;
+  opening_hours: string;
   phone: string;
   tags: string[];
-  mainServicePrice: number;
-  mainServiceName: string;
+  main_service_price: number | string;
+  main_service_name: string;
   services: Service[];
   barbers: Barber[];
 }

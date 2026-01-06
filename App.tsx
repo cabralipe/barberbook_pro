@@ -308,8 +308,8 @@ const App: React.FC = () => {
 
                   <div className="mt-auto pt-4 border-t border-border-dark flex items-center justify-between">
                     <div className="text-xs text-text-secondary">
-                      <span className="block text-white font-bold text-sm">R$ {shop.mainServicePrice.toFixed(2).replace('.', ',')}</span>
-                      {shop.mainServiceName}
+                      <span className="block text-white font-bold text-sm">R$ {Number(shop.main_service_price).toFixed(2).replace('.', ',')}</span>
+                      {shop.main_service_name}
                     </div>
                     <button className={`${shop.status === 'Lotado' || shop.status === 'Agenda Cheia' ? 'opacity-50 cursor-not-allowed bg-surface-highlight hover:bg-surface-highlight text-white' : 'bg-primary hover:bg-[#e07b1e] text-[#181411]'} text-sm font-bold py-2 px-4 rounded-lg transition-colors`}>
                       {shop.status === 'Lotado' || shop.status === 'Agenda Cheia' ? 'Lotado' : 'Agendar'}
@@ -376,7 +376,7 @@ const App: React.FC = () => {
                   <span className="flex items-center gap-1">
                     <Star className="text-primary fill-primary" size={18} />
                     <span className="text-white font-semibold">{shop.rating}</span>
-                    <span>({shop.reviewsCount || '100+'} avaliações)</span>
+                    <span>({shop.reviews_count || '100+'} avaliações)</span>
                   </span>
                   <span className="hidden md:inline">•</span>
                   <span className="flex items-center gap-1">
@@ -450,7 +450,7 @@ const App: React.FC = () => {
               <div className="flex items-start gap-3">
                 <Clock className="text-primary mt-0.5" size={20} />
                 <div>
-                  <p className="text-white text-sm font-medium">Seg - Sex: {shop.openingHours}</p>
+                  <p className="text-white text-sm font-medium">Seg - Sex: {shop.opening_hours}</p>
                   <p className="text-white text-sm font-medium">Sáb: 09:00 - 18:00</p>
                   <p className="text-text-secondary text-xs mt-1">Domingo Fechado</p>
                 </div>
@@ -517,7 +517,7 @@ const App: React.FC = () => {
                     <div>
                       <div className="flex justify-between items-start mb-2 pr-8">
                         <h3 className={`text-lg font-bold transition-colors ${isSelected ? 'text-primary' : 'text-white group-hover:text-primary'}`}>{service.name}</h3>
-                        <span className="text-primary font-bold text-lg">R$ {service.price},00</span>
+                        <span className="text-primary font-bold text-lg">R$ {Number(service.price).toFixed(2).replace('.', ',')}</span>
                       </div>
                       <p className="text-text-secondary text-sm mb-4 line-clamp-2">{service.description}</p>
                     </div>
@@ -526,7 +526,7 @@ const App: React.FC = () => {
                       <div className="flex items-center gap-4 border-t border-border-dark pt-3 mb-4">
                         <div className="flex items-center gap-1.5 text-text-secondary text-xs font-medium bg-background-dark/50 px-2 py-1 rounded">
                           <Clock size={14} />
-                          <span>{service.durationMin} min</span>
+                          <span>{service.duration_min} min</span>
                         </div>
                         {service.discount ? (
                           <div className="flex items-center gap-1.5 text-green-400 text-xs font-medium">
@@ -592,7 +592,7 @@ const App: React.FC = () => {
     const weekDays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
     const selectedService = booking.selectedServices[0];
-    const total = booking.selectedServices.reduce((acc, s) => acc + s.price, 0);
+    const total = booking.selectedServices.reduce((acc, s) => acc + Number(s.price), 0);
 
     // Function to get a random barber for a time slot if "Any" is selected
     // In a real app this would come from backend availability
@@ -777,10 +777,10 @@ const App: React.FC = () => {
                     <p className="text-text-secondary text-sm mt-1 line-clamp-2">{selectedService.description}</p>
                     <div className="flex items-center gap-3 mt-2 text-xs text-text-secondary">
                       <span className="flex items-center gap-1 bg-background-dark/50 px-2 py-0.5 rounded">
-                        <Clock size={12} /> {selectedService.durationMin} min
+                        <Clock size={12} /> {selectedService.duration_min} min
                       </span>
                       <span className="flex items-center gap-1 text-primary font-bold">
-                        R$ {selectedService.price.toFixed(2).replace('.', ',')}
+                        R$ {Number(selectedService.price).toFixed(2).replace('.', ',')}
                       </span>
                     </div>
                   </div>
@@ -865,7 +865,7 @@ const App: React.FC = () => {
     if (!booking.selectedShop) return null;
 
     // Calculate totals
-    const total = booking.selectedServices.reduce((acc, s) => acc + s.price, 0);
+    const total = booking.selectedServices.reduce((acc, s) => acc + Number(s.price), 0);
 
     return (
       <div className="w-full flex justify-center py-8 px-4 sm:px-6">
@@ -1028,9 +1028,9 @@ const App: React.FC = () => {
                         <div key={s.id} className="mb-2 last:mb-0">
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-white text-sm font-medium">{s.name}</span>
-                            <span className="text-white text-sm font-bold">R$ {s.price.toFixed(2).replace('.', ',')}</span>
+                            <span className="text-white text-sm font-bold">R$ {Number(s.price).toFixed(2).replace('.', ',')}</span>
                           </div>
-                          <p className="text-text-secondary text-xs">Aprox. {s.durationMin} min</p>
+                          <p className="text-text-secondary text-xs">Aprox. {s.duration_min} min</p>
                         </div>
                       ))}
                     </div>
@@ -1075,7 +1075,7 @@ const App: React.FC = () => {
   const renderConfirmation = () => {
     if (!booking.selectedShop || !booking.selectedDate) return null;
 
-    const total = booking.selectedServices.reduce((acc, s) => acc + s.price, 0);
+    const total = booking.selectedServices.reduce((acc, s) => acc + Number(s.price), 0);
     const bookingNumber = "#84930";
 
     // Determine readable payment method
@@ -1195,7 +1195,7 @@ const App: React.FC = () => {
                         <div key={s.id} className="mb-2 last:mb-0">
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-white text-sm font-medium">{s.name}</span>
-                            <span className="text-white text-sm font-bold">R$ {s.price.toFixed(2).replace('.', ',')}</span>
+                            <span className="text-white text-sm font-bold">R$ {Number(s.price).toFixed(2).replace('.', ',')}</span>
                           </div>
                           <p className="text-text-secondary text-xs">{paymentText}</p>
                         </div>
